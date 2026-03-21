@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Jangel 3.1 | Автообмен</title>
+    <title>Jangel 3.1 | Обмен</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -242,12 +242,8 @@
             background: #2a2a3a;
         }
 
-        .btn-danger {
-            background: #dc2626;
-        }
-
-        .btn-success {
-            background: #10b981;
+        .single-button {
+            margin-top: 10px;
         }
 
         .info-text {
@@ -260,18 +256,228 @@
             border-radius: 10px;
         }
 
-        .form-group {
+        .reputation-block {
+            text-align: center;
+            margin-top: 10px;
+            padding: 6px;
+            background: rgba(168, 85, 247, 0.1);
+            border-radius: 10px;
+        }
+
+        .reputation-block span {
+            color: #c084fc;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .calculator {
+            background: #1e1e2a;
+            border-radius: 16px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .calc-label {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 8px;
+        }
+
+        .calc-input {
+            width: 100%;
+            background: #0a0a14;
+            border: 1px solid #a855f7;
+            border-radius: 40px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            outline: none;
+        }
+
+        .calc-input:focus {
+            border-color: #c084fc;
+        }
+
+        .calc-result {
+            text-align: center;
+            margin-top: 16px;
+            padding: 12px;
+            background: #0a0a14;
+            border-radius: 40px;
+        }
+
+        .calc-result-label {
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .calc-result-value {
+            font-size: 24px;
+            font-weight: 800;
+            color: #c084fc;
+        }
+
+        .calc-hint {
+            font-size: 10px;
+            color: #666;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .prefix-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .prefix-item {
+            background: #1e1e2a;
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            border: 1px solid #2a2a3a;
+        }
+
+        .prefix-item:active {
+            background: #2a2a3a;
+        }
+
+        .prefix-item i {
+            color: #a855f7;
+            font-size: 18px;
+            width: 28px;
+        }
+
+        .prefix-info {
+            flex: 1;
+        }
+
+        .prefix-name {
+            font-size: 14px;
+            font-weight: 600;
+            font-family: monospace;
+            margin-bottom: 4px;
+        }
+
+        .prefix-desc {
+            font-size: 11px;
+            color: #888;
+        }
+
+        .gift-card {
+            text-align: center;
+            padding: 20px 16px;
+        }
+
+        .gift-icon {
+            font-size: 55px;
             margin-bottom: 16px;
         }
 
-        .form-label {
-            font-size: 12px;
-            color: #aaa;
-            margin-bottom: 6px;
-            display: block;
+        .gift-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #c084fc;
+            margin-bottom: 12px;
         }
 
-        .form-input, .form-textarea {
+        .bear-icon {
+            font-size: 40px;
+            margin: 10px 0;
+        }
+
+        .gift-text {
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .chat-list {
+            background: #1e1e2a;
+            border-radius: 14px;
+            padding: 12px;
+            margin: 16px 0;
+            text-align: left;
+        }
+
+        .chat-list span {
+            display: inline-block;
+            background: #a855f7;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin: 4px;
+        }
+
+        .rules-content {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #ccc;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+
+        .rules-section {
+            margin-bottom: 16px;
+        }
+
+        .rules-section h4 {
+            color: #c084fc;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            margin-top: 12px;
+        }
+
+        .rules-section p {
+            margin-bottom: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #12121c;
+            border-radius: 24px;
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid #a855f7;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #c084fc;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .modal-input {
             width: 100%;
             background: #0a0a14;
             border: 1px solid #2a2a3a;
@@ -279,101 +485,39 @@
             padding: 12px;
             color: white;
             font-size: 14px;
-            outline: none;
-        }
-
-        .form-input:focus, .form-textarea:focus {
-            border-color: #a855f7;
-        }
-
-        .form-textarea {
-            min-height: 80px;
-            resize: vertical;
-            font-family: inherit;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .status-waiting { background: #f59e0b; color: #000; }
-        .status-paid { background: #3b82f6; color: white; }
-        .status-completed { background: #10b981; color: white; }
-        .status-cancelled { background: #ef4444; color: white; }
-
-        .deal-item {
-            background: #1e1e2a;
-            border-radius: 12px;
-            padding: 12px;
             margin-bottom: 12px;
         }
 
-        .deal-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
+        .modal-input:focus {
+            border-color: #a855f7;
+            outline: none;
         }
 
-        .deal-id {
-            font-size: 11px;
-            color: #888;
-            font-family: monospace;
-        }
-
-        .deal-amount {
-            font-size: 16px;
-            font-weight: 700;
-            color: #c084fc;
-        }
-
-        .deal-details {
-            font-size: 11px;
-            color: #aaa;
-            margin-top: 8px;
-        }
-
-        .payment-info {
-            background: #0a0a14;
+        .deal-status {
+            background: #1e1e2a;
             border-radius: 12px;
             padding: 12px;
-            margin: 12px 0;
-            text-align: center;
+            margin-top: 12px;
+            font-size: 13px;
         }
 
-        .payment-address {
-            font-family: monospace;
-            font-size: 12px;
+        .status-waiting { color: #fbbf24; }
+        .status-paid { color: #10b981; }
+        .status-confirmed { color: #a855f7; }
+        
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
             background: #1e1e2a;
-            padding: 8px;
-            border-radius: 8px;
-            margin: 8px 0;
-            word-break: break-all;
-        }
-
-        .copy-btn {
-            background: #2a2a3a;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
             color: white;
-            font-size: 11px;
-            cursor: pointer;
-        }
-
-        .timer {
-            font-size: 20px;
-            font-weight: 700;
-            color: #f59e0b;
-            text-align: center;
-            margin: 10px 0;
-        }
-
-        .hidden {
-            display: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            z-index: 1000;
+            border-left: 3px solid #a855f7;
+            animation: fadeIn 0.3s;
         }
     </style>
 </head>
@@ -384,7 +528,7 @@
                 <i class="fas fa-chart-line"></i>
             </div>
             <h1>JANGEL 3.1</h1>
-            <p>автообмен валют</p>
+            <p>обмен валют</p>
             <div class="loading-bar">
                 <div class="loading-progress" id="loadProgress"></div>
             </div>
@@ -395,19 +539,17 @@
         <div class="header">
             <h1>JANGEL 3.1</h1>
             <div class="welcome-text">
-                Добро пожаловать дорогой и уважаемый пользователь!<br>
+                Добро пожаловать дорогой и уважаемый пользователь! Мы ради приветствовать тебя.<br>
                 На связи: <span>@JANGEL_3_1</span>
             </div>
         </div>
 
         <div id="panelExchange" class="panel active">
-            <!-- Форма создания сделки -->
-            <div class="card" id="createDealForm">
+            <div class="card">
                 <div class="card-title">
-                    <i class="fas fa-plus-circle"></i>
-                    Создать сделку
+                    <i class="fas fa-arrow-down"></i>
+                    Покупаю USDT
                 </div>
-                
                 <div class="rate-row">
                     <span class="rate-amount">от 7$</span>
                     <span class="rate-price">76 ₽</span>
@@ -425,34 +567,33 @@
                     <span class="rate-price">79 ₽</span>
                 </div>
 
-                <div class="form-group">
-                    <label class="form-label">Сумма в USDT</label>
-                    <input type="number" id="dealAmount" class="form-input" placeholder="Введите сумму от 7 USDT" step="1" min="7">
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">Реквизиты для получения (номер карты/счета)</label>
-                    <textarea id="dealRecipient" class="form-textarea" placeholder="Введите номер карты или другие реквизиты..."></textarea>
-                </div>
-
-                <div class="info-text" id="calcResult" style="font-size: 14px; font-weight: 600;">
-                    К оплате: 0 ₽
+                <div class="calculator">
+                    <div class="calc-label">
+                        <i class="fas fa-calculator"></i> Калькулятор покупки USDT
+                    </div>
+                    <input type="number" id="usdInput" class="calc-input" placeholder="Введите сумму в $" value="7" step="1">
+                    <div class="calc-result">
+                        <div class="calc-result-label">Вы получите:</div>
+                        <div class="calc-result-value" id="rubResult">532 ₽</div>
+                    </div>
+                    <div class="calc-hint">Курс зависит от суммы. Чем больше сумма — тем выше курс</div>
                 </div>
 
                 <button class="btn" id="createDealBtn">
-                    <i class="fab fa-bitcoin"></i>
+                    <i class="fas fa-exchange-alt"></i>
                     Создать сделку
                 </button>
-            </div>
 
-            <!-- Активные сделки -->
-            <div class="card" id="activeDealsSection">
-                <div class="card-title">
+                <button class="btn btn-secondary single-button" id="myDealsBtn">
                     <i class="fas fa-history"></i>
                     Мои сделки
+                </button>
+
+                <div class="reputation-block">
+                    <span>Репутация 4000+</span>
                 </div>
-                <div id="dealsList">
-                    <div class="info-text">Нет активных сделок</div>
+                <div class="info-text">
+                    <i class="fas fa-exclamation-triangle"></i> Черные монеты запрещены
                 </div>
             </div>
         </div>
@@ -504,8 +645,56 @@
                     <i class="fas fa-book"></i>
                     Правила чата
                 </div>
-                <div class="rules-content" style="max-height: 500px; overflow-y: auto; font-size: 12px; line-height: 1.5;">
-                    <p>Правила проекта...</p>
+                <div class="rules-content">
+                    <div class="rules-section">
+                        <h4>1. Общие положения</h4>
+                        <p>1.1 Любое лицо, находящееся в одном из проектов Ja Angel, автоматически подтверждает своё согласие с настоящим сводом правил и обязуется соблюдать их в полном объёме.</p>
+                        <p>1.2 Срок подачи апелляции на наказание, которое пользователь считает несправедливым, не должен превышать 48 часов с момента его получения. Апелляции, поданные по истечении данного срока, рассмотрению не подлежат.</p>
+                        <p>1.3 Администрация проекта Ja Angel не несёт ответственности за фейковые аккаунты и не обязана возмещать пользователю утраченные средства, ценности или иные ресурсы, возникшие в результате сделок между участниками. Исключение составляют случаи, связанные с официальным депозитом, размещённым в переходнике или в био чата, при условии предоставления полных и подтверждённых доказательств.</p>
+                        <p>1.4 Пользователь несёт личную ответственность перед участниками сделки за действия третьих лиц, включая случаи, когда такие действия приводят к нарушению прав и законных интересов сторон. В подобных ситуациях наказания могут применяться как к участнику сделки, так и к третьему лицу.</p>
+                        <p>1.5 Незнание настоящих правил не освобождает пользователя от ответственности.</p>
+                    </div>
+
+                    <div class="rules-section">
+                        <h4>2. Нарушения и меры наказания</h4>
+                        <p>2.1 Наличие подтверждённых доказательств скама, попыток обмана, введения в заблуждение пользователей или администрации проекта. <span class="punishment">Наказание: бан.</span></p>
+                        <p>2.2 Запрещена реклама, привлечение, перегон или переманивание участников любыми способами без предварительного согласования с руководством проекта. <span class="punishment">Наказание: бан.</span></p>
+                        <p>2.3 Угрозы жизни и здоровью, а также взаимодействие с подозрительными лицами. <span class="punishment">Наказание: бан.</span></p>
+                        <p>2.4 Категорически запрещено оставлять отзывы, которые не соответствуют действительности, искажают факты либо вводят в заблуждение пользователей. <span class="punishment">Наказание: бан.</span></p>
+                        <p>2.5 Оскорбление участников проекта. <span class="punishment">Наказание: мут 24 часа.</span></p>
+                        <p>2.6 Предложения любых видов азартных игр на деньги в чате. <span class="punishment">Наказание: мут 24 часа.</span></p>
+                        <p>2.7 Отметка администрации в случае игнорирования личных сообщений в течение 24 часов. <span class="punishment">Наказание: мут 5 часов.</span></p>
+                        <p>2.8 Обмен и покупка USDT запрещена. <span class="punishment">Наказание: бан.</span></p>
+                    </div>
+
+                    <div class="rules-section">
+                        <h4>3. Споры и разрешение конфликтов</h4>
+                        <p>3.1 В случае возникновения спорных ситуаций стороны обязаны предоставить администрации полные и достоверные доказательства (скриншоты переписок, чеки, ссылки и иные материалы).</p>
+                        <p>3.2 Администрация проекта Ja Angel выступает в роли независимой стороны и принимает решение на основании предоставленных доказательств. Решение администрации является окончательным и обязательным к исполнению.</p>
+                        <p>3.3 Споры без предоставления доказательств либо с поддельными материалами рассмотрению не подлежат.</p>
+                        <p>3.4 Попытка давления на администрацию, манипуляций или введения в заблуждение в процессе разбирательства приравнивается к нарушению правил. <span class="punishment">Наказание: мут или бан (на усмотрение администрации).</span></p>
+                    </div>
+
+                    <div class="rules-section">
+                        <h4>4. Депозиты и финансовые обязательства</h4>
+                        <p>4.1 Официальным депозитом считается только депозит, переданный через реквизиты, указанные администрацией, размещённые в переходнике или био чата проекта Ja Angel.</p>
+                        <p>4.2 Администрация не несёт ответственности за депозиты и финансовые операции, совершённые вне официальных каналов проекта.</p>
+                        <p>4.3 Возврат депозита возможен исключительно при наличии подтверждённых доказательств нарушения условий сделки со стороны одного из участников и только после рассмотрения администрацией.</p>
+                        <p>4.4 Срок рассмотрения депозитных споров может составлять до 72 часов с момента предоставления полного пакета доказательств.</p>
+                    </div>
+
+                    <div class="rules-section">
+                        <h4>5. Роль и полномочия администрации</h4>
+                        <p>5.1 Администрация проекта Ja Angel имеет право: выдавать наказания в рамках настоящих правил; запрашивать дополнительные доказательства; принимать решения в спорных и нестандартных ситуациях; удалять контент, нарушающий правила проекта.</p>
+                        <p>5.2 Администрация вправе не раскрывать внутренние процессы принятия решений и может отказать в комментариях без объяснения причин.</p>
+                        <p>5.3 Неуважительное общение с администрацией, давление или попытки подрыва её авторитета рассматриваются как нарушение правил. <span class="punishment">Наказание: мут или бан (на усмотрение администрации).</span></p>
+                    </div>
+
+                    <div class="rules-section">
+                        <h4>6. Заключительные положения</h4>
+                        <p>6.1 Администрация проекта оставляет за собой право изменять и дополнять настоящий свод правил без предварительного уведомления пользователей.</p>
+                        <p>6.2 Актуальная версия правил считается действующей с момента публикации. Пользователи обязаны самостоятельно отслеживать обновления.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -530,365 +719,291 @@
         </div>
     </div>
 
+    <!-- Модальное окно создания сделки -->
+    <div id="dealModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">Создание сделки</div>
+            <input type="number" id="modalAmount" class="modal-input" placeholder="Сумма в USDT (от 7$)" step="1">
+            <input type="text" id="modalCard" class="modal-input" placeholder="Номер карты для получения средств">
+            <button class="btn" id="submitDealBtn">Создать сделку</button>
+            <button class="btn btn-secondary" id="closeModalBtn">Отмена</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно моих сделок -->
+    <div id="dealsModal" class="modal">
+        <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
+            <div class="modal-title">Мои сделки</div>
+            <div id="dealsList"></div>
+            <button class="btn btn-secondary" id="closeDealsModalBtn">Закрыть</button>
+        </div>
+    </div>
+
     <script>
-        // Supabase конфигурация (ЗАМЕНИТЬ НА СВОИ ДАННЫЕ)
-        const SUPABASE_URL = 'https://aoogkjqdsbozaeblxloc.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9';
-        
-        // CryptoPay конфигурация
-        const CRYPTOPAY_API_KEY = 'ваш-api-key';
-        const CRYPTOPAY_APP_ID = 'ваш-app-id'; // ID бота @send
-        
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.enableClosingConfirmation();
-        tg.setHeaderColor('#0a0a14');
-        tg.setBackgroundColor('#0a0a14');
-        
-        let currentUser = null;
-        let supabase = null;
-        
-        // Получение данных пользователя
-        function initUser() {
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                currentUser = tg.initDataUnsafe.user;
-            } else {
-                currentUser = {
-                    id: Math.floor(Math.random() * 1000000),
-                    first_name: 'Гость',
-                    username: 'guest'
-                };
-            }
-            console.log('User:', currentUser);
-        }
-        
-        // Инициализация Supabase
-        function initSupabase() {
-            if (SUPABASE_URL.includes('ваш')) {
-                console.warn('⚠️ ВНИМАНИЕ: Не настроен Supabase! Замените SUPABASE_URL и SUPABASE_ANON_KEY');
-                return null;
-            }
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            return supabase;
-        }
-        
-        // Получение курса по сумме
-        function getRateForAmount(amount) {
-            if (amount < 20) return 76;
-            if (amount < 50) return 77;
-            if (amount < 100) return 78;
-            return 79;
-        }
-        
-        // Расчет суммы в рублях
-        function calculateRub(usd) {
-            const rate = getRateForAmount(usd);
-            return usd * rate;
-        }
-        
-        // Обновление калькулятора
-        function updateCalculator() {
-            const amount = parseFloat(document.getElementById('dealAmount').value) || 0;
-            const rub = calculateRub(amount);
-            document.getElementById('calcResult').innerHTML = `К оплате: ${Math.floor(rub)} ₽ (курс: ${getRateForAmount(amount)} ₽)`;
-        }
-        
-        // Создание инвойса в CryptoPay
-        async function createCryptoPayInvoice(amount, orderId) {
-            try {
-                const response = await fetch('https://pay.cryptobot.app/api/createInvoice', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Crypto-Pay-API-Token': CRYPTOPAY_API_KEY
-                    },
-                    body: JSON.stringify({
-                        asset: 'USDT',
-                        amount: amount,
-                        description: `Сделка #${orderId}`,
-                        hidden_message: `Оплата сделки #${orderId}`,
-                        paid_btn_name: 'callback',
-                        paid_btn_url: `https://t.me/JANGEL_3_1?start=check_${orderId}`
-                    })
-                });
-                
-                const data = await response.json();
-                if (data.ok && data.result) {
-                    return data.result;
-                }
-                return null;
-            } catch (error) {
-                console.error('CryptoPay error:', error);
-                return null;
-            }
-        }
-        
-        // Создание сделки
-        async function createDeal() {
-            const amount = parseFloat(document.getElementById('dealAmount').value);
-            const recipient = document.getElementById('dealRecipient').value.trim();
-            
-            if (!amount || amount < 7) {
-                tg.showPopup({
-                    title: 'Ошибка',
-                    message: 'Минимальная сумма 7 USDT',
-                    buttons: [{ type: 'ok' }]
-                });
-                return;
-            }
-            
-            if (!recipient) {
-                tg.showPopup({
-                    title: 'Ошибка',
-                    message: 'Введите реквизиты для получения',
-                    buttons: [{ type: 'ok' }]
-                });
-                return;
-            }
-            
-            if (!supabase) {
-                tg.showPopup({
-                    title: 'Ошибка',
-                    message: 'Сервис временно недоступен',
-                    buttons: [{ type: 'ok' }]
-                });
-                return;
-            }
-            
-            const rubAmount = calculateRub(amount);
-            const dealId = `DEAL_${Date.now()}_${currentUser.id}`;
-            
-            // Показываем загрузку
-            tg.showPopup({
-                title: 'Создание сделки',
-                message: 'Пожалуйста, подождите...',
-                buttons: [{ type: 'ok' }]
-            });
-            
-            try {
-                // Создаем инвойс в CryptoPay
-                const invoice = await createCryptoPayInvoice(amount, dealId);
-                
-                if (!invoice) {
-                    throw new Error('Не удалось создать платеж');
-                }
-                
-                // Сохраняем сделку в Supabase
-                const { data, error } = await supabase
-                    .from('deals')
-                    .insert({
-                        deal_id: dealId,
-                        user_id: currentUser.id.toString(),
-                        user_name: currentUser.first_name || currentUser.username,
-                        amount_usd: amount,
-                        amount_rub: rubAmount,
-                        recipient: recipient,
-                        status: 'waiting_payment',
-                        crypto_invoice_id: invoice.invoice_id,
-                        crypto_pay_url: invoice.pay_url,
-                        created_at: new Date().toISOString(),
-                        expires_at: new Date(Date.now() + 30 * 60 * 1000).toISOString() // 30 минут
-                    })
-                    .select()
-                    .single();
-                
-                if (error) throw error;
-                
-                // Открываем ссылку на оплату
-                tg.openTelegramLink(invoice.pay_url);
-                
-                tg.showPopup({
-                    title: 'Сделка создана',
-                    message: `Сумма: ${amount} USDT\nК оплате: ${Math.floor(rubAmount)} ₽\n\nПосле оплаты сделка будет обработана`,
-                    buttons: [{ type: 'ok' }]
-                });
-                
-                // Очищаем форму
-                document.getElementById('dealAmount').value = '';
-                document.getElementById('dealRecipient').value = '';
-                
-                // Обновляем список сделок
-                loadUserDeals();
-                
-                if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-                
-            } catch (error) {
-                console.error('Create deal error:', error);
-                tg.showPopup({
-                    title: 'Ошибка',
-                    message: error.message || 'Не удалось создать сделку',
-                    buttons: [{ type: 'ok' }]
-                });
-            }
-        }
-        
-        // Загрузка сделок пользователя
-        async function loadUserDeals() {
-            if (!supabase) return;
-            
-            try {
-                const { data, error } = await supabase
-                    .from('deals')
-                    .select('*')
-                    .eq('user_id', currentUser.id.toString())
-                    .order('created_at', { ascending: false })
-                    .limit(20);
-                
-                if (error) throw error;
-                
-                renderDeals(data || []);
-                
-            } catch (error) {
-                console.error('Load deals error:', error);
-            }
-        }
-        
-        // Отображение сделок
-        function renderDeals(deals) {
-            const container = document.getElementById('dealsList');
-            
-            if (!deals || deals.length === 0) {
-                container.innerHTML = '<div class="info-text">Нет активных сделок</div>';
-                return;
-            }
-            
-            container.innerHTML = deals.map(deal => {
-                let statusText = '';
-                let statusClass = '';
-                let actions = '';
-                
-                switch(deal.status) {
-                    case 'waiting_payment':
-                        statusText = 'Ожидает оплаты';
-                        statusClass = 'status-waiting';
-                        actions = `<button class="btn btn-secondary" onclick="retryPayment('${deal.deal_id}')" style="margin-top: 8px;">
-                                    <i class="fas fa-credit-card"></i> Оплатить
-                                   </button>`;
-                        break;
-                    case 'paid':
-                        statusText = 'Оплачено, ожидает подтверждения';
-                        statusClass = 'status-paid';
-                        actions = `<div class="info-text"><i class="fas fa-clock"></i> Администратор проверяет оплату</div>`;
-                        break;
-                    case 'completed':
-                        statusText = 'Завершено';
-                        statusClass = 'status-completed';
-                        actions = `<div class="info-text"><i class="fas fa-check-circle"></i> Средства переведены</div>`;
-                        break;
-                    case 'cancelled':
-                        statusText = 'Отменено';
-                        statusClass = 'status-cancelled';
-                        break;
-                    default:
-                        statusText = deal.status;
-                        statusClass = 'status-waiting';
-                }
-                
-                // Проверка на просрочку
-                const expiresAt = new Date(deal.expires_at);
-                const isExpired = deal.status === 'waiting_payment' && expiresAt < new Date();
-                
-                if (isExpired && deal.status === 'waiting_payment') {
-                    statusText = 'Просрочено';
-                    statusClass = 'status-cancelled';
-                }
-                
-                return `
-                    <div class="deal-item">
-                        <div class="deal-header">
-                            <span class="deal-id">${deal.deal_id}</span>
-                            <span class="status-badge ${statusClass}">${statusText}</span>
-                        </div>
-                        <div class="deal-amount">${deal.amount_usd} USDT → ${Math.floor(deal.amount_rub)} ₽</div>
-                        <div class="deal-details">
-                            Создана: ${new Date(deal.created_at).toLocaleString()}
-                        </div>
-                        ${actions}
-                    </div>
-                `;
-            }).join('');
-        }
-        
-        // Повторная оплата
-        async function retryPayment(dealId) {
-            if (!supabase) return;
-            
-            try {
-                const { data, error } = await supabase
-                    .from('deals')
-                    .select('*')
-                    .eq('deal_id', dealId)
-                    .single();
-                
-                if (error) throw error;
-                
-                if (data.crypto_pay_url) {
-                    tg.openTelegramLink(data.crypto_pay_url);
-                } else {
-                    // Создаем новый инвойс
-                    const invoice = await createCryptoPayInvoice(data.amount_usd, dealId);
-                    if (invoice) {
-                        await supabase
-                            .from('deals')
-                            .update({
-                                crypto_invoice_id: invoice.invoice_id,
-                                crypto_pay_url: invoice.pay_url,
-                                expires_at: new Date(Date.now() + 30 * 60 * 1000).toISOString()
-                            })
-                            .eq('deal_id', dealId);
-                        
-                        tg.openTelegramLink(invoice.pay_url);
-                    }
-                }
-                
-            } catch (error) {
-                console.error('Retry payment error:', error);
-                tg.showPopup({
-                    title: 'Ошибка',
-                    message: 'Не удалось восстановить оплату',
-                    buttons: [{ type: 'ok' }]
-                });
-            }
-        }
-        
-        // Подписка на изменения статусов сделок
-        function subscribeToDeals() {
-            if (!supabase) return;
-            
-            supabase
-                .channel('deals_changes')
-                .on('postgres_changes', 
-                    { event: 'UPDATE', schema: 'public', table: 'deals', filter: `user_id=eq.${currentUser.id}` },
-                    (payload) => {
-                        const deal = payload.new;
-                        console.log('Deal updated:', deal);
-                        
-                        // Показываем уведомление при изменении статуса
-                        if (deal.status === 'completed') {
-                            tg.showPopup({
-                                title: 'Сделка завершена!',
-                                message: `Сделка #${deal.deal_id}\nСумма ${deal.amount_usd} USDT переведена на ваши реквизиты`,
-                                buttons: [{ type: 'ok' }]
-                            });
-                            if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
-                            loadUserDeals();
-                        }
-                    }
-                )
-                .subscribe();
-        }
-        
-        // Инициализация
-        function init() {
-            initUser();
-            initSupabase();
-            
-            // Настройка сплеша
-            let progress = 0;
-            const loadProgress = document.getElementById('loadProgress');
+        (function() {
+            const tg = window.Telegram.WebApp;
+            tg.expand();
+            tg.enableClosingConfirmation();
+            tg.setHeaderColor('#0a0a14');
+            tg.setBackgroundColor('#0a0a14');
+
+            // Supabase
+            const supabaseUrl = 'https://aoogkjqdsbozaeblxloc.supabase.co';
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFvb2dranFkc2JvemFlYmx4bG9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMjY5MTEsImV4cCI6MjA4OTcwMjkxMX0.w8Jm5AS8aW3yjD6Uw8iGSnlHYQQU-BCpfSqIdowhA2Y';
+            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
             const splash = document.getElementById('splash');
             const main = document.getElementById('main');
+            const loadProgress = document.getElementById('loadProgress');
+
+            const panelExchange = document.getElementById('panelExchange');
+            const panelPrefixes = document.getElementById('panelPrefixes');
+            const panelGift = document.getElementById('panelGift');
+            const panelRules = document.getElementById('panelRules');
             
+            const navExchange = document.getElementById('navExchange');
+            const navPrefixes = document.getElementById('navPrefixes');
+            const navGift = document.getElementById('navGift');
+            const navRules = document.getElementById('navRules');
+            
+            const prefixList = document.getElementById('prefixList');
+            const usdInput = document.getElementById('usdInput');
+            const rubResult = document.getElementById('rubResult');
+            const createDealBtn = document.getElementById('createDealBtn');
+            const myDealsBtn = document.getElementById('myDealsBtn');
+            const dealModal = document.getElementById('dealModal');
+            const dealsModal = document.getElementById('dealsModal');
+            const modalAmount = document.getElementById('modalAmount');
+            const modalCard = document.getElementById('modalCard');
+            const submitDealBtn = document.getElementById('submitDealBtn');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const closeDealsModalBtn = document.getElementById('closeDealsModalBtn');
+            const dealsList = document.getElementById('dealsList');
+
+            let currentUser = null;
+
+            // Получение данных пользователя
+            function getUser() {
+                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    currentUser = tg.initDataUnsafe.user;
+                } else {
+                    currentUser = { id: 'test_' + Date.now(), username: 'test_user' };
+                }
+                return currentUser;
+            }
+
+            // Курсы
+            const rates = [
+                { min: 0, max: 7, rate: 76 },
+                { min: 7, max: 20, rate: 76 },
+                { min: 20, max: 50, rate: 77 },
+                { min: 50, max: 100, rate: 78 },
+                { min: 100, max: Infinity, rate: 79 }
+            ];
+
+            function getRateForAmount(amount) {
+                if (amount < 7) return 76;
+                for (let i = 0; i < rates.length; i++) {
+                    if (amount >= rates[i].min && amount < rates[i].max) {
+                        return rates[i].rate;
+                    }
+                }
+                return 79;
+            }
+
+            function calculateRub() {
+                let usd = parseFloat(usdInput.value);
+                if (isNaN(usd) || usd < 0) usd = 0;
+                const rate = getRateForAmount(usd);
+                const rub = usd * rate;
+                rubResult.innerText = `${Math.floor(rub)} ₽`;
+            }
+
+            usdInput.addEventListener('input', calculateRub);
+            calculateRub();
+
+            // Префиксы
+            const prefixes = [
+                { name: '@dolbaebebanuysuka', desc: 'скуп Мегафона' },
+                { name: '@duba_t', desc: 'скупает Макс (объём)' }
+            ];
+
+            function buildPrefixes() {
+                prefixList.innerHTML = '';
+                prefixes.forEach(prefix => {
+                    const item = document.createElement('div');
+                    item.className = 'prefix-item';
+                    item.innerHTML = `
+                        <i class="fas fa-at"></i>
+                        <div class="prefix-info">
+                            <div class="prefix-name">${prefix.name}</div>
+                            <div class="prefix-desc">${prefix.desc}</div>
+                        </div>
+                    `;
+                    item.addEventListener('click', () => {
+                        const username = prefix.name.replace('@', '');
+                        const url = 'https://t.me/' + username;
+                        if (tg.openTelegramLink) tg.openTelegramLink(url);
+                        else window.open(url, '_blank');
+                        if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+                    });
+                    prefixList.appendChild(item);
+                });
+            }
+            buildPrefixes();
+
+            // Создание сделки
+            async function createDeal() {
+                const amount = parseFloat(modalAmount.value);
+                const card = modalCard.value.trim();
+                
+                if (!amount || amount < 7) {
+                    showToast('Минимальная сумма 7 USDT');
+                    return;
+                }
+                if (!card) {
+                    showToast('Введите номер карты');
+                    return;
+                }
+                
+                const user = getUser();
+                const rate = getRateForAmount(amount);
+                const rubAmount = amount * rate;
+                const dealId = 'JANGEL_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
+                
+                const { data, error } = await supabase
+                    .from('deals')
+                    .insert([{
+                        deal_id: dealId,
+                        user_id: String(user.id),
+                        username: user.username || 'anonymous',
+                        amount_usd: amount,
+                        amount_rub: rubAmount,
+                        rate: rate,
+                        recipient_card: card,
+                        status: 'waiting_payment'
+                    }]);
+                
+                if (error) {
+                    showToast('Ошибка создания сделки');
+                    console.error(error);
+                    return;
+                }
+                
+                showToast('Сделка создана! Ожидайте подтверждения');
+                dealModal.classList.remove('active');
+                modalAmount.value = '';
+                modalCard.value = '';
+                
+                // Отправка уведомления админу (через бота)
+                const adminMessage = `📊 Новая сделка!\nID: ${dealId}\nСумма: ${amount} USDT\nСумма к оплате: ${Math.floor(rubAmount)} ₽\nКарта: ${card}\nПользователь: @${user.username || user.id}`;
+                await sendNotificationToAdmin(adminMessage);
+            }
+            
+            // Отправка уведомления админу
+            async function sendNotificationToAdmin(message) {
+                // Здесь нужно интегрировать Telegram Bot API
+                // Пока просто показываем в консоль
+                console.log('ADMIN NOTIFICATION:', message);
+                showToast('Уведомление отправлено администратору');
+            }
+            
+            // Получение сделок пользователя
+            async function loadUserDeals() {
+                const user = getUser();
+                const { data, error } = await supabase
+                    .from('deals')
+                    .select('*')
+                    .eq('user_id', String(user.id))
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    showToast('Ошибка загрузки сделок');
+                    return;
+                }
+                
+                dealsList.innerHTML = '';
+                if (!data || data.length === 0) {
+                    dealsList.innerHTML = '<div class="info-text">У вас пока нет сделок</div>';
+                } else {
+                    data.forEach(deal => {
+                        const statusText = deal.status === 'waiting_payment' ? '⏳ Ожидает оплаты' :
+                                          deal.status === 'paid' ? '✅ Оплачено, ожидает подтверждения' :
+                                          deal.status === 'confirmed' ? '🎉 Завершена' : '❓ ' + deal.status;
+                        const statusColor = deal.status === 'waiting_payment' ? '#fbbf24' :
+                                           deal.status === 'paid' ? '#10b981' :
+                                           deal.status === 'confirmed' ? '#a855f7' : '#888';
+                        
+                        const dealDiv = document.createElement('div');
+                        dealDiv.className = 'deal-status';
+                        dealDiv.innerHTML = `
+                            <div><strong>Сделка:</strong> ${deal.deal_id}</div>
+                            <div><strong>Сумма:</strong> ${deal.amount_usd} USDT</div>
+                            <div><strong>К оплате:</strong> ${Math.floor(deal.amount_rub)} ₽</div>
+                            <div><strong>Статус:</strong> <span style="color: ${statusColor}">${statusText}</span></div>
+                            ${deal.status === 'paid' ? '<button class="btn" style="margin-top: 8px; padding: 8px;" onclick="checkConfirmation()">Проверить</button>' : ''}
+                            <div style="font-size: 10px; color: #666; margin-top: 6px;">${new Date(deal.created_at).toLocaleString()}</div>
+                        `;
+                        dealsList.appendChild(dealDiv);
+                    });
+                }
+            }
+            
+            function showToast(message) {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.innerText = message;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+            }
+            
+            // Навигация
+            function setActive(panel) {
+                panelExchange.classList.remove('active');
+                panelPrefixes.classList.remove('active');
+                panelGift.classList.remove('active');
+                panelRules.classList.remove('active');
+                navExchange.classList.remove('active');
+                navPrefixes.classList.remove('active');
+                navGift.classList.remove('active');
+                navRules.classList.remove('active');
+
+                if (panel === 'exchange') {
+                    panelExchange.classList.add('active');
+                    navExchange.classList.add('active');
+                } else if (panel === 'prefixes') {
+                    panelPrefixes.classList.add('active');
+                    navPrefixes.classList.add('active');
+                } else if (panel === 'gift') {
+                    panelGift.classList.add('active');
+                    navGift.classList.add('active');
+                } else {
+                    panelRules.classList.add('active');
+                    navRules.classList.add('active');
+                }
+                if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            }
+
+            navExchange.addEventListener('click', () => setActive('exchange'));
+            navPrefixes.addEventListener('click', () => setActive('prefixes'));
+            navGift.addEventListener('click', () => setActive('gift'));
+            navRules.addEventListener('click', () => setActive('rules'));
+            
+            createDealBtn.addEventListener('click', () => {
+                dealModal.classList.add('active');
+            });
+            
+            myDealsBtn.addEventListener('click', async () => {
+                await loadUserDeals();
+                dealsModal.classList.add('active');
+            });
+            
+            submitDealBtn.addEventListener('click', createDeal);
+            closeModalBtn.addEventListener('click', () => dealModal.classList.remove('active'));
+            closeDealsModalBtn.addEventListener('click', () => dealsModal.classList.remove('active'));
+            
+            // Загрузка
+            let progress = 0;
             const interval = setInterval(() => {
                 progress += Math.random() * 20;
                 if (progress >= 100) {
@@ -900,82 +1015,18 @@
                             splash.style.display = 'none';
                             main.style.display = 'block';
                             if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-                            
-                            // Загружаем сделки
-                            loadUserDeals();
-                            subscribeToDeals();
-                            
                         }, 300);
                     }, 200);
                 }
                 loadProgress.style.width = Math.min(progress, 100) + '%';
             }, 70);
             
-            // Калькулятор
-            const amountInput = document.getElementById('dealAmount');
-            amountInput.addEventListener('input', updateCalculator);
-            updateCalculator();
-            
-            // Кнопка создания сделки
-            document.getElementById('createDealBtn').addEventListener('click', createDeal);
-            
-            // Навигация
-            const panels = {
-                exchange: document.getElementById('panelExchange'),
-                prefixes: document.getElementById('panelPrefixes'),
-                gift: document.getElementById('panelGift'),
-                rules: document.getElementById('panelRules')
-            };
-            
-            const navBtns = {
-                exchange: document.getElementById('navExchange'),
-                prefixes: document.getElementById('navPrefixes'),
-                gift: document.getElementById('navGift'),
-                rules: document.getElementById('navRules')
-            };
-            
-            function setActive(panel) {
-                Object.values(panels).forEach(p => p.classList.remove('active'));
-                Object.values(navBtns).forEach(b => b.classList.remove('active'));
-                panels[panel].classList.add('active');
-                navBtns[panel].classList.add('active');
-                if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-            }
-            
-            navBtns.exchange.addEventListener('click', () => setActive('exchange'));
-            navBtns.prefixes.addEventListener('click', () => setActive('prefixes'));
-            navBtns.gift.addEventListener('click', () => setActive('gift'));
-            navBtns.rules.addEventListener('click', () => setActive('rules'));
-            
-            // Префиксы
-            const prefixes = [
-                { name: '@dolbaebebanuysuka', desc: 'скуп Мегафона' },
-                { name: '@duba_t', desc: 'скупает Макс (объём)' }
-            ];
-            
-            const prefixList = document.getElementById('prefixList');
-            prefixes.forEach(prefix => {
-                const item = document.createElement('div');
-                item.className = 'prefix-item';
-                item.innerHTML = `
-                    <i class="fas fa-at"></i>
-                    <div class="prefix-info">
-                        <div class="prefix-name">${prefix.name}</div>
-                        <div class="prefix-desc">${prefix.desc}</div>
-                    </div>
-                `;
-                item.addEventListener('click', () => {
-                    const username = prefix.name.replace('@', '');
-                    const url = 'https://t.me/' + username;
-                    if (tg.openTelegramLink) tg.openTelegramLink(url);
-                    else window.open(url, '_blank');
-                });
-                prefixList.appendChild(item);
-            });
-        }
+            getUser();
+        })();
         
-        // Запуск
-        init();
+        function checkConfirmation() {
+            window.location.reload();
+        }
     </script>
 </body>
 </html>
