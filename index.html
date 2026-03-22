@@ -29,11 +29,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
         .splash-screen {
             position: fixed;
             top: 0;
@@ -684,6 +679,64 @@
         .action-buttons .btn {
             margin: 0;
         }
+
+        .copy-number {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .copy-number span {
+            font-family: monospace;
+            font-size: 14px;
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .copy-number button {
+            background: #10b981;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 12px;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-number button:active {
+            transform: scale(0.95);
+        }
+
+        .admin-panel-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .admin-panel-buttons button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .admin-panel-buttons button.active {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            border-color: transparent;
+        }
     </style>
 </head>
 <body>
@@ -785,8 +838,26 @@
                     <i class="fas fa-crown"></i>
                     Админ панель
                 </div>
-                <div id="adminOrdersList">
-                    <div class="info-text">Загрузка...</div>
+                
+                <div class="admin-panel-buttons">
+                    <button id="adminOrdersBtn" class="active">📋 Заявки</button>
+                    <button id="adminRecipientsBtn">💰 Реквизиты</button>
+                </div>
+                
+                <div id="adminOrdersSection">
+                    <div id="adminOrdersList">
+                        <div class="info-text">Загрузка...</div>
+                    </div>
+                </div>
+                
+                <div id="adminRecipientsSection" style="display: none;">
+                    <div class="info-text" style="margin-bottom: 16px;">
+                        <i class="fas fa-info-circle"></i> Здесь отображаются реквизиты для оплаты. Нажмите на номер, чтобы скопировать.
+                    </div>
+                    <div id="recipientsList"></div>
+                    <div class="info-text" style="margin-top: 16px;">
+                        <i class="fas fa-plus-circle"></i> Добавить новый реквизит можно в базе данных Supabase в таблице recipients
+                    </div>
                 </div>
             </div>
         </div>
@@ -875,10 +946,6 @@
             
             let currentUser = null;
             const ADMIN_ID = 8155919358;
-            let selectedBank = 'Сбер';
-            let pendingAmount = null;
-            let pendingRub = null;
-            let pendingCode = null;
             
             function getRate(amount) {
                 if (amount < 7) return 76;
@@ -912,6 +979,131 @@
                 toast.innerText = msg;
                 document.body.appendChild(toast);
                 setTimeout(() => toast.remove(), 3000);
+            }
+            
+            function copyToClipboard(text) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast('✅ Номер скопирован: ' + text);
+                }).catch(() => {
+                    showToast('❌ Не удалось скопировать', true);
+                });
+            }
+            
+            async function loadRecipients() {
+                const { data, error } = await supabaseClient
+                    .from('recipients')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                const container = document.getElementById('recipientsList');
+                if (!container) return;
+                
+                if (error || !data || data.length === 0) {
+                    container.innerHTML = '<div class="info-text"><i class="fas fa-inbox"></i> Нет добавленных реквизитов</div>';
+                    return;
+                }
+                
+                container.innerHTML = data.map(recipient => `
+                    <div class="copy-number">
+                        <div style="flex: 1;">
+                            <div style="font-size: 11px; color: #9ca3af; margin-bottom: 4px;">
+                                <i class="fas fa-university"></i> ${recipient.bank || 'Банк'}
+                            </div>
+                            <span>${recipient.account_number}</span>
+                        </div>
+                        <button onclick="window.copyToClipboard('${recipient.account_number}')">
+                            <i class="fas fa-copy"></i> Копировать
+                        </button>
+                    </div>
+                `).join('');
+            }
+            
+            async function loadMyOrders() {
+                if (!currentUser) return;
+                
+                const { data, error } = await supabaseClient
+                    .from('exchange_requests')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+                
+                const container = document.getElementById('myOrdersList');
+                if (!container) return;
+                
+                if (error || !data || data.length === 0) {
+                    container.innerHTML = '<div class="info-text"><i class="fas fa-inbox"></i> У вас пока нет заявок</div>';
+                    return;
+                }
+                
+                const statusText = {
+                    pending: 'Ожидает оплаты',
+                    paid: 'Оплачено',
+                    completed: 'Завершено',
+                    cancelled: 'Отменено'
+                };
+                
+                const statusIcon = {
+                    pending: '🟡',
+                    paid: '🔵',
+                    completed: '🟢',
+                    cancelled: '🔴'
+                };
+                
+                container.innerHTML = data.map(order => `
+                    <div class="admin-request">
+                        <div class="request-header">
+                            <span class="request-id"><i class="fas fa-hashtag"></i> ${order.id.slice(0, 8)}</span>
+                            <span class="request-status">${statusIcon[order.status]} ${statusText[order.status]}</span>
+                        </div>
+                        <div class="request-details">
+                            <i class="fas fa-coins"></i> ${order.amount_usd} USDT → ${order.amount_rub} ₽<br>
+                            <i class="fas fa-key"></i> Код: ${order.secret_code}
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            async function loadAdminOrders() {
+                if (!currentUser || currentUser.id !== ADMIN_ID) return;
+                
+                const { data, error } = await supabaseClient
+                    .from('exchange_requests')
+                    .select('*')
+                    .in('status', ['pending', 'paid'])
+                    .order('created_at', { ascending: false });
+                
+                const container = document.getElementById('adminOrdersList');
+                if (!container) return;
+                
+                if (error || !data || data.length === 0) {
+                    container.innerHTML = '<div class="info-text"><i class="fas fa-inbox"></i> Нет активных заявок</div>';
+                    return;
+                }
+                
+                container.innerHTML = data.map(order => `
+                    <div class="admin-request">
+                        <div class="request-header">
+                            <span class="request-id"><i class="fas fa-hashtag"></i> ${order.id.slice(0, 8)}</span>
+                            <span class="request-status">${order.status === 'pending' ? '🟡 Ожидает' : '🔵 Оплачено'}</span>
+                        </div>
+                        <div class="request-details">
+                            <i class="fas fa-user"></i> <strong>${order.username}</strong> (${order.user_id})<br>
+                            <i class="fas fa-coins"></i> ${order.amount_usd} USDT → ${order.amount_rub} ₽<br>
+                            <i class="fas fa-phone"></i> ${order.phone}<br>
+                            <i class="fas fa-university"></i> ${order.bank}<br>
+                            <i class="fas fa-key"></i> <strong style="color:#c084fc">${order.secret_code}</strong>
+                        </div>
+                        <div class="request-actions">
+                            ${order.status === 'pending' ? `
+                                <button class="small-btn btn-success" onclick="window.markPaid('${order.id}')"><i class="fas fa-check"></i> Оплачено</button>
+                                <button class="small-btn btn-danger" onclick="window.cancelOrder('${order.id}')"><i class="fas fa-times"></i> Отмена</button>
+                            ` : ''}
+                            ${order.status === 'paid' ? `
+                                <button class="small-btn btn-success" onclick="window.completeOrder('${order.id}')"><i class="fas fa-check-double"></i> Завершить</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('');
             }
             
             function showAmountSelector() {
@@ -969,9 +1161,6 @@
             function showPaymentScreen(amount) {
                 const rubAmount = Math.floor(amount * getRate(amount));
                 const paymentCode = generatePaymentCode();
-                pendingAmount = amount;
-                pendingRub = rubAmount;
-                pendingCode = paymentCode;
                 
                 const modal = document.createElement('div');
                 modal.className = 'modal';
@@ -991,10 +1180,6 @@
                                 <i class="fas fa-exclamation-triangle"></i> Обязательно укажите этот код в комментарии к платежу!
                             </p>
                         </div>
-                        <a href="https://t.me/send?start=IVbPoRLGan1F" target="_blank" class="btn" id="payNowBtn" style="text-decoration: none; display: flex; margin: 8px 0;">
-                            <i class="fab fa-telegram"></i>
-                            Оплатить счёт
-                        </a>
                         <div class="info-text" style="margin-top: 12px;">
                             После оплаты нажмите "Продолжить"
                         </div>
@@ -1087,94 +1272,6 @@
                 document.getElementById('closeFinalBtn').onclick = () => modal.remove();
             }
             
-            async function loadMyOrders() {
-                if (!currentUser) return;
-                
-                const { data, error } = await supabaseClient
-                    .from('exchange_requests')
-                    .select('*')
-                    .eq('user_id', currentUser.id)
-                    .order('created_at', { ascending: false });
-                
-                const container = document.getElementById('myOrdersList');
-                if (!container) return;
-                
-                if (error || !data || data.length === 0) {
-                    container.innerHTML = '<div class="info-text"><i class="fas fa-inbox"></i> У вас пока нет заявок</div>';
-                    return;
-                }
-                
-                const statusText = {
-                    pending: 'Ожидает оплаты',
-                    paid: 'Оплачено',
-                    completed: 'Завершено',
-                    cancelled: 'Отменено'
-                };
-                
-                const statusIcon = {
-                    pending: '🟡',
-                    paid: '🔵',
-                    completed: '🟢',
-                    cancelled: '🔴'
-                };
-                
-                container.innerHTML = data.map(order => `
-                    <div class="admin-request">
-                        <div class="request-header">
-                            <span class="request-id"><i class="fas fa-hashtag"></i> ${order.id.slice(0, 8)}</span>
-                            <span class="request-status">${statusIcon[order.status]} ${statusText[order.status]}</span>
-                        </div>
-                        <div class="request-details">
-                            <i class="fas fa-coins"></i> ${order.amount_usd} USDT → ${order.amount_rub} ₽<br>
-                            <i class="fas fa-key"></i> Код: ${order.secret_code}
-                        </div>
-                    </div>
-                `).join('');
-            }
-            
-            async function loadAdminOrders() {
-                if (!currentUser || currentUser.id !== ADMIN_ID) return;
-                
-                const { data, error } = await supabaseClient
-                    .from('exchange_requests')
-                    .select('*')
-                    .in('status', ['pending', 'paid'])
-                    .order('created_at', { ascending: false });
-                
-                const container = document.getElementById('adminOrdersList');
-                if (!container) return;
-                
-                if (error || !data || data.length === 0) {
-                    container.innerHTML = '<div class="info-text"><i class="fas fa-inbox"></i> Нет активных заявок</div>';
-                    return;
-                }
-                
-                container.innerHTML = data.map(order => `
-                    <div class="admin-request">
-                        <div class="request-header">
-                            <span class="request-id"><i class="fas fa-hashtag"></i> ${order.id.slice(0, 8)}</span>
-                            <span class="request-status">${order.status === 'pending' ? '🟡 Ожидает' : '🔵 Оплачено'}</span>
-                        </div>
-                        <div class="request-details">
-                            <i class="fas fa-user"></i> <strong>${order.username}</strong> (${order.user_id})<br>
-                            <i class="fas fa-coins"></i> ${order.amount_usd} USDT → ${order.amount_rub} ₽<br>
-                            <i class="fas fa-phone"></i> ${order.phone}<br>
-                            <i class="fas fa-university"></i> ${order.bank}<br>
-                            <i class="fas fa-key"></i> <strong style="color:#c084fc">${order.secret_code}</strong>
-                        </div>
-                        <div class="request-actions">
-                            ${order.status === 'pending' ? `
-                                <button class="small-btn btn-success" onclick="window.markPaid('${order.id}')"><i class="fas fa-check"></i> Оплачено</button>
-                                <button class="small-btn btn-danger" onclick="window.cancelOrder('${order.id}')"><i class="fas fa-times"></i> Отмена</button>
-                            ` : ''}
-                            ${order.status === 'paid' ? `
-                                <button class="small-btn btn-success" onclick="window.completeOrder('${order.id}')"><i class="fas fa-check-double"></i> Завершить</button>
-                            ` : ''}
-                        </div>
-                    </div>
-                `).join('');
-            }
-            
             const prefixes = [
                 { name: '@dolbaebebanuysuka', desc: 'скуп Мегафона' },
                 { name: '@duba_t', desc: 'скупает Макс (объём)' }
@@ -1260,7 +1357,14 @@
                     if (navEl) navEl.classList.add('active');
                     
                     if (panel === 'myOrders') loadMyOrders();
-                    if (panel === 'admin') loadAdminOrders();
+                    if (panel === 'admin') {
+                        loadAdminOrders();
+                        loadRecipients();
+                        document.getElementById('adminOrdersBtn').classList.add('active');
+                        document.getElementById('adminRecipientsBtn').classList.remove('active');
+                        document.getElementById('adminOrdersSection').style.display = 'block';
+                        document.getElementById('adminRecipientsSection').style.display = 'none';
+                    }
                 };
                 
                 document.getElementById('navExchange').onclick = () => setActive('exchange');
@@ -1270,6 +1374,31 @@
                 document.getElementById('navRules').onclick = () => setActive('rules');
                 
                 window.setActive = setActive;
+            }
+            
+            function setupAdminTabs() {
+                const adminOrdersBtn = document.getElementById('adminOrdersBtn');
+                const adminRecipientsBtn = document.getElementById('adminRecipientsBtn');
+                const adminOrdersSection = document.getElementById('adminOrdersSection');
+                const adminRecipientsSection = document.getElementById('adminRecipientsSection');
+                
+                if (adminOrdersBtn && adminRecipientsBtn) {
+                    adminOrdersBtn.onclick = () => {
+                        adminOrdersBtn.classList.add('active');
+                        adminRecipientsBtn.classList.remove('active');
+                        adminOrdersSection.style.display = 'block';
+                        adminRecipientsSection.style.display = 'none';
+                        loadAdminOrders();
+                    };
+                    
+                    adminRecipientsBtn.onclick = () => {
+                        adminRecipientsBtn.classList.add('active');
+                        adminOrdersBtn.classList.remove('active');
+                        adminOrdersSection.style.display = 'none';
+                        adminRecipientsSection.style.display = 'block';
+                        loadRecipients();
+                    };
+                }
             }
             
             window.markPaid = async (id) => {
@@ -1305,6 +1434,8 @@
                 }
             };
             
+            window.copyToClipboard = copyToClipboard;
+            
             async function init() {
                 if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                     currentUser = tg.initDataUnsafe.user;
@@ -1331,13 +1462,13 @@
                 loadPrefixes();
                 loadRules();
                 setupNav();
+                setupAdminTabs();
                 
                 if (currentUser.id === ADMIN_ID) {
                     const floatingBtn = document.getElementById('floatingAdmin');
                     floatingBtn.style.display = 'flex';
                     floatingBtn.onclick = () => {
                         window.setActive('admin');
-                        loadAdminOrders();
                     };
                 }
                 
